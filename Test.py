@@ -5,6 +5,7 @@ import calendar
 LARGEFONT = ("Verdana", 35)
 
 #michellewashesclothes
+#ooooospoopy
 
 
 class tkinterApp(tk.Tk):
