@@ -1,11 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-import calendar
 
 LARGEFONT = ("Verdana", 35)
-
-#michellewashesclothes
-#ooooospoopy
 
 
 class tkinterApp(tk.Tk):
