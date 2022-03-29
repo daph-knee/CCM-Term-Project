@@ -44,7 +44,7 @@ class tkinterApp(tk.Tk):
         frame.tkraise()
 
 
-# first window frame startpage
+# first window frame
 
 class POSPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -79,6 +79,17 @@ class POSPage(tk.Frame):
         button4 = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
         button4.grid(row=4, column=1, padx=10, pady=10)
+
+        curr_order = ttk.Label(self, text="Order\n\n", borderwidth=5, relief="solid")
+        curr_order.grid(row=1, column=5, padx=(300, 0), pady=10, sticky="nw", rowspan= 5)
+
+        menu_button1 = ttk.Button(self, text="CheeseBurger",
+                                  command=lambda: order_add("CheeseBurger", curr_order))
+        menu_button1.grid(row=1, column=4, padx=(30, 0), pady=10)
+
+        def order_add(item, order):
+            order.configure(text=order.cget("text") + item + "\n")
+            pass
 
 
 # second window frame page1
@@ -156,7 +167,8 @@ class DailyReport(tk.Frame):
 
         # button to show frame 2 with text
         # layout2
-        button1 = ttk.Button(self, text="POS")
+        button1 = ttk.Button(self, text="POS",
+                             command=lambda: controller.show_frame(POSPage))
 
         button1.grid(row=1, column=1, padx=10, pady=10)
 
