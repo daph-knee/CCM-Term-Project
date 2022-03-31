@@ -1,0 +1,13 @@
+class Ingredients:
+    def __init__(self, name, qpu, qoh, ppu): #qpu=quantity per unit(as in stock ordering unit), qoh=quantity on hand(as in number of stock units), produces = number of uses until 1 less qoh
+        self.name = name
+        self.qpb = qpb #quantity per box (as in stock order box)
+        self.qoh = qoh #quantity of boxes on hand 
+        ppu = ppu #production possibiity per one item
+        pp = qoh/ppu #total production possibility based on stock
+    def __str__(self):
+        return "You have {} units on hand, this is enough to produce {} burgers".format(qoh, pp)
+        
+tomato = Ingrediants("tomato", 20, 1, 5)
+
+print(tomato)

@@ -41,8 +41,7 @@ class tkinterApp(tk.Tk):
     # parameter
     def show_frame(self, cont):
         frame = self.frames[cont]
-        frame.tkraise()
-
+        frame.tkraise()    
 
 # first window frame
 
@@ -98,32 +97,51 @@ class Inventory(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="Inventory", font=LARGEFONT)
-        label.grid(row=0, column=4, padx=10, pady=10)
+        label.grid(row=0, column=2, padx=10, pady=10)
 
         # button to show frame 2 with text
         # layout2
-        button1 = ttk.Button(self, text="POS",
+        POS_button = ttk.Button(self, text="POS",
                              command=lambda: controller.show_frame(POSPage))
 
-        button1.grid(row=1, column=1, padx=10, pady=10)
+        POS_button.grid(row=1, column=1, padx=10, pady=10)
 
-        button2 = ttk.Button(self, text="Inventory")
+        inventory_button = ttk.Button(self, text="Inventory")
 
         # putting the button in its place by
         # using grid
-        button2.grid(row=2, column=1, padx=10, pady=10)
+        inventory_button.grid(row=2, column=1, padx=10, pady=10)
 
         ## button to show frame 2 with text layout2
-        button3 = ttk.Button(self, text="Waste Man.",
+        waste_button = ttk.Button(self, text="Waste Man.",
                              command=lambda: controller.show_frame(Waste))
 
         # putting the button in its place by
         # using grid
-        button3.grid(row=3, column=1, padx=10, pady=10)
+        waste_button.grid(row=3, column=1, padx=10, pady=10)
 
-        button4 = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
+        daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        button4.grid(row=4, column=1, padx=10, pady=10)
+        daily_button.grid(row=4, column=1, padx=10, pady=10)
+        
+        #columns for tree view
+        columns = ('item', 'quantity_per_unit', 'quantity_on_hand')
+        
+        inventory_tv = ttk.Treeview(self, columns=columns, show ='headings', selectmode='browse')
+        
+        #define headings
+        inventory_tv.heading('item',text='Item')
+        inventory_tv.heading('quantity_per_unit',text='Quantity Per Unit(Box)')
+        inventory_tv.heading('quantity_on_hand',text='Quantity On Hand')
+        
+        #list of items to test with
+        items = ['tomato','cheese','lettuce','buns','patty']
+        
+        #add items to treeview
+        for item in items:
+            inventory_tv.insert ('', tk.END, values =item)
+            
+        inventory_tv.grid(row=1, column=2, columnspan=3, rowspan=5)
 
 
 # third window frame page2
