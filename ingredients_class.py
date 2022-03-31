@@ -1,3 +1,5 @@
+#created ingredients class to track quantities
+
 class Ingredients:
     def __init__(self, name, qpb, qoh, ppu): #qpu=quantity per unit(as in stock ordering unit), qoh=quantity on hand(as in number of stock units), produces = number of uses until 1 less qoh
         self.name = name
