@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+import database
+import models
 
 LARGEFONT = ("Verdana", 35)
 
@@ -8,9 +10,10 @@ class tkinterApp(tk.Tk):
 
     # __init__ function for class tkinterApp
     def __init__(self, *args, **kwargs):
-
         # __init__ function for class Tk
         tk.Tk.__init__(self, *args, **kwargs)
+
+        self.data = models.SQLStorage()
 
         # creating a container
         container = tk.Frame(self)
@@ -25,8 +28,7 @@ class tkinterApp(tk.Tk):
         # iterating through a tuple consisting
         # of the different page layouts
         for F in (POSPage, Inventory, Waste, DailyReport):
-
-            frame = F(container, self)
+            frame = F(container, self, persist=self.data)
 
             # initializing frame of that object from
             # startpage, page1, page2 respectively with
@@ -47,7 +49,7 @@ class tkinterApp(tk.Tk):
 # first window frame
 
 class POSPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
 
         # label of frame Layout 2
@@ -59,14 +61,14 @@ class POSPage(tk.Frame):
 
         button1 = ttk.Button(self, text="POS")
 
-        button1.grid(row=1, column=1, padx=10, pady=10)
+        button1.grid(row=1, column=1, padx=10)
 
         button2 = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
 
         # putting the button in its place by
         # using grid
-        button2.grid(row=2, column=1, padx=10, pady=10)
+        button2.grid(row=2, column=1, padx=10)
 
         ## button to show frame 2 with text layout2
         button3 = ttk.Button(self, text="Waste Man.",
@@ -74,28 +76,98 @@ class POSPage(tk.Frame):
 
         # putting the button in its place by
         # using grid
-        button3.grid(row=3, column=1, padx=10, pady=10)
+        button3.grid(row=3, column=1, padx=10)
 
         button4 = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        button4.grid(row=4, column=1, padx=10, pady=10)
+        button4.grid(row=4, column=1, padx=10)
 
-        curr_order = ttk.Label(self, text="Order\n\n", borderwidth=5, relief="solid")
-        curr_order.grid(row=1, column=5, padx=(300, 0), pady=10, sticky="nw", rowspan= 5)
+        contact_table = tk.Frame(self, width=500)
+        contact_table.grid(column=6, row=1, rowspan=7, columnspan=5, padx=10, pady=10)
+        scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
+        scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
+        self.tree = ttk.Treeview(contact_table, columns=("name", "cost"),
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+        scrollbary.config(command=self.tree.yview)
+        scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbarx.config(command=self.tree.xview)
+        scrollbarx.pack(side=tk.BOTTOM, fill=tk.X)
+        # this section would allow for expanding the viewable columns
+        self.tree.heading('name', text="Name", anchor=tk.W)
+        self.tree.heading('cost', text="Cost", anchor=tk.W)
+        self.tree.column('#0', stretch=tk.NO, minwidth=0, width=0)
+        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=200)
+        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=60)
+        self.tree.bind('<<TreeviewSelect>>', self.on_select)
+        self.tree.pack()
+        self.selected = []
 
-        menu_button1 = ttk.Button(self, text="CheeseBurger",
-                                  command=lambda: order_add("CheeseBurger", curr_order))
-        menu_button1.grid(row=1, column=4, padx=(30, 0), pady=10)
+        # this object is the data persistence model
+        self.persist = persist
+        """all_records = self.persist.get_all_sorted_records()
+        # grab all records from db and add them to the treeview widget
+        for record in all_records:
+            self.tree.insert("", 0, values=(
+                record.rid, record.name, "$" + str(record.cost)))
+        """
 
-        def order_add(item, order):
-            order.configure(text=order.cget("text") + item + "\n")
-            pass
+        # I don't love clunkiness of vertical ordering here, should use horizontal space better
+        """edit_button = tk.Button(self, text="Edit Record",
+                                command=self.edit_selected)
+        edit_button.grid(column=4, row=3)
+        """
+        delete_button = tk.Button(self, text="Delete Item",
+                                  command=self.delete_selected)
+        delete_button.grid(column=9, row=8, pady=10, ipady=15)
+
+        cheeseburger_button = tk.Button(self, text="Add CheeseBurger",
+                                        command=lambda: self.submit("Cheeseburger", 5))
+        cheeseburger_button.grid(column=4, row=8, pady=10)
+
+        fries_button = tk.Button(self, text="Add Fries", command=lambda: self.submit("Fries", 2))
+        fries_button.grid(column=5, row=8, pady=10)
+
+        pay_button = tk.Button(self, text="Pay", command=lambda: self.update())
+        pay_button.grid(column=10, row=8, pady=10, ipadx=15, ipady=15)
+
+    """def edit_selected(self):
+        idx = self.selected[0]  # use first selected item if multiple
+        record_id = self.tree.item(idx)['values'][0]
+        self.controller.show_frame("ReadPage", record_id)
+    """
+
+    def on_select(self, event):
+        ''' add the currently highlighted items to a list
+        '''
+        self.selected = event.widget.selection()
+
+    def delete_selected(self):
+        ''' uses the selected list to remove and delete certain records
+        '''
+        for idx in self.selected:
+            self.tree.delete(idx)
+
+    def update(self):
+        ''' Update the database when payment is recieved
+        '''
+        for row in self.tree.get_children():
+            c = models.Item(self.tree.item(row)['values'][0], self.tree.item(row)['values'][1].replace("$", ""))
+            self.persist.save_record(c)
+            self.tree.delete(row)
+        all_records = self.persist.get_all_sorted_records()
+        for record in all_records:
+            print(record)
+
+    def submit(self, item, cost):
+        ''' Add selected menu item to treeview widget
+        '''
+        self.tree.insert("", 0, values=(item, "$" + str(cost)))
 
 
 # second window frame page1
 class Inventory(tk.Frame):
 
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="Inventory", font=LARGEFONT)
         label.grid(row=0, column=4, padx=10, pady=10)
@@ -128,7 +200,7 @@ class Inventory(tk.Frame):
 
 # third window frame page2
 class Waste(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="Waste Management", font=LARGEFONT)
         label.grid(row=0, column=4, padx=10, pady=10)
@@ -160,7 +232,7 @@ class Waste(tk.Frame):
 
 
 class DailyReport(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="Daily Report", font=LARGEFONT)
         label.grid(row=0, column=4, padx=10, pady=10)
