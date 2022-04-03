@@ -125,6 +125,9 @@ class POSPage(tk.Frame):
 
         fries_button = tk.Button(self, text="Add Fries", command=lambda: self.submit("Fries", 2))
         fries_button.grid(column=5, row=8, pady=10)
+        
+        fries2_button = tk.Button(self, text="Add 2Fries", command=lambda: self.submit("2Fries", 2))
+        fries2_button.grid(column=6, row=8, pady=10)        
 
         pay_button = tk.Button(self, text="Pay", command=lambda: self.update())
         pay_button.grid(column=10, row=8, pady=10, ipadx=15, ipady=15)
