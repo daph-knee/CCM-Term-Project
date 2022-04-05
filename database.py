@@ -21,7 +21,9 @@ def create_database():
     cur.execute('''CREATE TABLE IF NOT EXISTS "inventory" (
                 "item_id"	INTEGER PRIMARY KEY,
                 "Item"	TEXT NOT NULL,
-                "Quantity"	INTEGER NOT NULL
+                "qpb"	FLOAT NOT NULL,
+                "qoh"   INTEGER NOT NULL,
+                "ppu"   INTEGER NOT NULL
                 );''')
     cur.execute('''DROP TABLE IF EXISTS waste;''')
     cur.execute('''CREATE TABLE IF NOT EXISTS "waste" (
