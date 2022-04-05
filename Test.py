@@ -131,8 +131,7 @@ class POSPage(tk.Frame):
                                   command=self.delete_selected)
         delete_button.grid(column=9, row=8, pady=10, ipady=15)
 
-        cheeseburger_button = tk.Button(self, text="Add CheeseBurger",
-                                        command=lambda: self.submit("Cheeseburger", 5))
+        cheeseburger_button = tk.Button(self, text="Add CheeseBurger",command=lambda: self.submit("Cheeseburger", 5))
         cheeseburger_button.grid(column=4, row=8, pady=10)
 
         fries_button = tk.Button(self, text="Add Fries", command=lambda: self.submit("Fries", 2))
@@ -219,7 +218,7 @@ class Inventory(tk.Frame):
 
         # columns for tree view
         contact_table = tk.Frame(self, width=500)
-        contact_table.grid(column=2, row=1, columnspan=4)
+        contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
@@ -261,13 +260,13 @@ class Inventory(tk.Frame):
         # I don't love clunkiness of vertical ordering here, should use horizontal space better
         edit_button = tk.Button(self, text="Restock Item",
                                 command=self.edit_selected)
-        edit_button.grid(column=6, row=3, padx=10)
+        edit_button.grid(column=3, row=7, pady=10)
 
-        options_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        self.value = tkinter.StringVar(self)
+        options_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]                                        
+        self.value = tkinter.StringVar(self) 
         self.value.set("Number of boxes to order:")
         restock_quantity = tkinter.OptionMenu(self, self.value, *options_list)
-        restock_quantity.grid(column=3, row=2)
+        restock_quantity.grid(column=3, row=6)
 
 
     def edit_selected(self):
