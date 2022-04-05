@@ -1,3 +1,4 @@
+import tkinter
 import tkinter as tk
 from tkinter import ttk
 import database
@@ -47,8 +48,12 @@ class tkinterApp(tk.Tk):
 
     # to display the current frame passed as
     # parameter
-    def show_frame(self, cont):
+    def show_frame(self, cont, rid=0):
         frame = self.frames[cont]
+        if not rid == 0:
+            frame.update(rid)
+        else:
+            frame.update()
         frame.tkraise()
 
     # first window frame
@@ -159,9 +164,15 @@ class POSPage(tk.Frame):
     def update(self):
         ''' Update the database when payment is recieved
         '''
+        recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Buns"], "Fries": ["Fries"], "2 Fries": ["Fries", "Fries"]}
         for row in self.tree.get_children():
             c = models.Item(self.tree.item(row)['values'][0], self.tree.item(row)['values'][1].replace("$", ""))
             self.persist.save_record(c, "order")
+            ing = recipe[self.tree.item(row)['values'][0]]
+            for i in ing:
+                ing_data = self.persist.get_record(i, "inventory")
+                ing_data.use(1)
+                self.persist.save_record(ing_data, "inventory")
             self.tree.delete(row)
         all_records = self.persist.get_all_sorted_records("order")
         for record in all_records:
@@ -208,7 +219,7 @@ class Inventory(tk.Frame):
 
         # columns for tree view
         contact_table = tk.Frame(self, width=500)
-        contact_table.grid(column=2, row=1)
+        contact_table.grid(column=2, row=1, columnspan=4)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
@@ -220,7 +231,7 @@ class Inventory(tk.Frame):
         # this section would allow for expanding the viewable columns
         self.tree.heading('id', text="ID", anchor=tk.W)
         self.tree.heading('Item', text="Item", anchor=tk.W)
-        self.tree.heading('Quantity', text="Quantity", anchor=tk.W)
+        self.tree.heading('Quantity', text="Quantity (individual units)", anchor=tk.W)
         self.tree.column('#0', stretch=tk.NO, minwidth=0, width=0)
         self.tree.column('#1', stretch=tk.NO, minwidth=0, width=60)
         self.tree.column('#2', stretch=tk.NO, minwidth=0, width=200)
@@ -243,19 +254,32 @@ class Inventory(tk.Frame):
         # grab all records from db and add them to the treeview widget
         for record in all_records:
             self.tree.insert("", 0, values=(
-                record.rid, record.name, record.units))
+                record.rid, record.name, record.pp))
 
         ''' '''
 
         # I don't love clunkiness of vertical ordering here, should use horizontal space better
         edit_button = tk.Button(self, text="Restock Item",
                                 command=self.edit_selected)
-        edit_button.grid(column=2, row=2)
+        edit_button.grid(column=6, row=3, padx=10)
+
+        options_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        self.value = tkinter.StringVar(self)
+        self.value.set("Number of boxes to order:")
+        restock_quantity = tkinter.OptionMenu(self, self.value, *options_list)
+        restock_quantity.grid(column=3, row=2)
+
 
     def edit_selected(self):
         idx = self.selected[0]  # use first selected item if multiple
         record_id = self.tree.item(idx)['values'][0]
-        self.controller.show_frame("ReadPage", record_id)
+        print(record_id)
+        self.value.get()
+        ing_quant = self.persist.get_record(self.tree.item(idx)['values'][1], "inventory")
+        ing_quant.restock(int(self.value.get()))
+        self.persist.save_record(ing_quant, "inventory")
+        self.update()
+
 
     def on_select(self, event):
         ''' add the currently highlighted items to a list
@@ -270,7 +294,10 @@ class Inventory(tk.Frame):
         all_records = self.persist.get_all_sorted_records("inventory")
         for record in all_records:
             self.tree.insert("", 0, values=(
-                record.rid, record.name, record.email))
+                record.rid, record.name, record.pp))
+
+    def order(self):
+        pass
 
 
 

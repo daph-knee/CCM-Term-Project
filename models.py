@@ -14,19 +14,19 @@ class SQLStorage():
         self.data_access = self.conn.cursor()
         # data_access is now a cursor object
 
-    def get_record(self, rid, table):
+    def get_record(self, name, table):
         ''' return a single record identified by the record id
         '''
         # note unintuitive creation of single item tuple
         if table.__contains__("order"):
             self.data_access.execute(
-                """SELECT * from orders WHERE item_id = ?;""", (rid,))
+                """SELECT * from orders WHERE Item = ?;""", (name,))
             row = self.data_access.fetchone()
             contact = Item(row[1], row[2], row[0])
             return contact
         elif table.__contains__("inventory"):
             self.data_access.execute(
-                """SELECT * from inventory WHERE item_id = ?;""", (rid,))
+                """SELECT * from inventory WHERE Item = ?;""", (name,))
             row = self.data_access.fetchone()
             if row is None:
                 return None
@@ -34,7 +34,7 @@ class SQLStorage():
             return contact
         else:
             self.data_access.execute(
-                """SELECT * from orders WHERE item_id = ?;""", (rid,))
+                """SELECT * from orders WHERE Item = ?;""", (name,))
             row = self.data_access.fetchone()
             contact = Item(row[1], row[2], row[0])
             return contact
@@ -117,7 +117,7 @@ class SQLStorage():
             self.data_access.close()
 
     def is_empty(self, table):
-        if self.get_record(1, table) is None:
+        if self.get_record("Lettuce", table) is None:
             return True
         return False
 
@@ -127,7 +127,6 @@ class Item():
         self.rid = rid  # 0 represents a new, unsaved record; will get updated
         self.name = name
         self.cost = cost
-        # self.ingredients = ingredients
 
     def __str__(self):
         return f'Item Sale#: {self.rid}; Name: {self.name}, Revenue: {self.cost}'
