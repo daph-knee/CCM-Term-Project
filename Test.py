@@ -1,16 +1,49 @@
 import tkinter
 import tkinter as tk
 from tkinter import ttk
-import database
 import models
 import ingredients_class
+import sqlite3
 
 LARGEFONT = ("Verdana", 35)
-
 
 """
 >>> Connect to database or create if not already exists
 """
+
+
+def connect_database():
+    global conn, cur
+
+    # will connect to db if exists, or create a new one.
+    conn = sqlite3.connect('Mcdoodles.db')
+
+    cur = conn.cursor()
+
+
+def create_database():
+    cur.execute('''CREATE TABLE IF NOT EXISTS "orders" (
+            "order_id"	INTEGER PRIMARY KEY,
+            "Item"	TEXT NOT NULL,
+            "Cost"	INTEGER NOT NULL
+            );''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS "inventory" (
+                "item_id"	INTEGER PRIMARY KEY,
+                "Item"	TEXT NOT NULL,
+                "qpb"	FLOAT NOT NULL,
+                "qoh"   INTEGER NOT NULL,
+                "ppu"   INTEGER NOT NULL
+                );''')
+    cur.execute('''CREATE TABLE IF NOT EXISTS "waste" (
+                "item_id"	INTEGER PRIMARY KEY,
+                "Item"	TEXT NOT NULL,
+                "Quantity"	INTEGER NOT NULL
+                );''')
+
+
+def close_database():
+    conn.commit()
+    conn.close()
 
 
 class tkinterApp(tk.Tk):
@@ -62,6 +95,9 @@ class tkinterApp(tk.Tk):
 class POSPage(tk.Frame):
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
+
+        self.recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Buns"], "Fries": ["Fries"],
+                       "2 Fries": ["Fries", "Fries"]}
 
         # label of frame Layout 2
         label = ttk.Label(self, text="POS", font=LARGEFONT)
@@ -115,23 +151,12 @@ class POSPage(tk.Frame):
 
         # this object is the data persistence model
         self.persist = persist
-        """all_records = self.persist.get_all_sorted_records()
-        # grab all records from db and add them to the treeview widget
-        for record in all_records:
-            self.tree.insert("", 0, values=(
-                record.rid, record.name, "$" + str(record.cost)))
-        """
 
-        # I don't love clunkiness of vertical ordering here, should use horizontal space better
-        """edit_button = tk.Button(self, text="Edit Record",
-                                command=self.edit_selected)
-        edit_button.grid(column=4, row=3)
-        """
         delete_button = tk.Button(self, text="Delete Item",
                                   command=self.delete_selected)
         delete_button.grid(column=9, row=8, pady=10, ipady=15)
 
-        cheeseburger_button = tk.Button(self, text="Add CheeseBurger",command=lambda: self.submit("Cheeseburger", 5))
+        cheeseburger_button = tk.Button(self, text="Add CheeseBurger", command=lambda: self.submit("Cheeseburger", 5))
         cheeseburger_button.grid(column=4, row=8, pady=10)
 
         fries_button = tk.Button(self, text="Add Fries", command=lambda: self.submit("Fries", 2))
@@ -142,12 +167,6 @@ class POSPage(tk.Frame):
 
         pay_button = tk.Button(self, text="Pay", command=lambda: self.update())
         pay_button.grid(column=10, row=8, pady=10, ipadx=15, ipady=15)
-
-    """def edit_selected(self):
-        idx = self.selected[0]  # use first selected item if multiple
-        record_id = self.tree.item(idx)['values'][0]
-        self.controller.show_frame("ReadPage", record_id)
-    """
 
     def on_select(self, event):
         ''' add the currently highlighted items to a list
@@ -163,24 +182,25 @@ class POSPage(tk.Frame):
     def update(self):
         ''' Update the database when payment is recieved
         '''
-        recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Buns"], "Fries": ["Fries"], "2 Fries": ["Fries", "Fries"]}
         for row in self.tree.get_children():
             c = models.Item(self.tree.item(row)['values'][0], self.tree.item(row)['values'][1].replace("$", ""))
             self.persist.save_record(c, "order")
-            ing = recipe[self.tree.item(row)['values'][0]]
+            ing = self.recipe[self.tree.item(row)['values'][0]]
             for i in ing:
                 ing_data = self.persist.get_record(i, "inventory")
                 ing_data.use(1)
                 self.persist.save_record(ing_data, "inventory")
             self.tree.delete(row)
-        all_records = self.persist.get_all_sorted_records("order")
-        for record in all_records:
-            print(record)
 
     def submit(self, item, cost):
         ''' Add selected menu item to treeview widget
         '''
-        self.tree.insert("", 0, values=(item, "$" + str(cost)))
+        valid = True
+        for ing in self.recipe[item]:
+            if self.persist.get_record(ing, "inventory").pp < 1:
+                valid = False
+        if valid:
+            self.tree.insert("", 0, values=(item, "$" + str(cost)))
 
 
 # second window frame page1
@@ -239,7 +259,6 @@ class Inventory(tk.Frame):
         self.tree.pack()
         self.selected = []
 
-
         # this object is the data persistence model
         self.persist = persist
         if self.persist.is_empty("inventory"):
@@ -262,23 +281,20 @@ class Inventory(tk.Frame):
                                 command=self.edit_selected)
         edit_button.grid(column=3, row=7, pady=10)
 
-        options_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]                                        
-        self.value = tkinter.StringVar(self) 
+        options_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]
+        self.value = tkinter.StringVar(self)
         self.value.set("Number of boxes to order:")
         restock_quantity = tkinter.OptionMenu(self, self.value, *options_list)
         restock_quantity.grid(column=3, row=6)
 
-
     def edit_selected(self):
         idx = self.selected[0]  # use first selected item if multiple
         record_id = self.tree.item(idx)['values'][0]
-        print(record_id)
         self.value.get()
         ing_quant = self.persist.get_record(self.tree.item(idx)['values'][1], "inventory")
         ing_quant.restock(int(self.value.get()))
         self.persist.save_record(ing_quant, "inventory")
         self.update()
-
 
     def on_select(self, event):
         ''' add the currently highlighted items to a list
@@ -294,11 +310,6 @@ class Inventory(tk.Frame):
         for record in all_records:
             self.tree.insert("", 0, values=(
                 record.rid, record.name, record.pp))
-
-    def order(self):
-        pass
-
-
 
 
 # third window frame page2
@@ -333,6 +344,73 @@ class Waste(tk.Frame):
 
         button4.grid(row=4, column=1, padx=10, pady=10)
 
+        contact_table = tk.Frame(self, width=500)
+        contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
+        scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
+        scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
+        self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+        scrollbary.config(command=self.tree.yview)
+        scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbarx.config(command=self.tree.xview)
+        scrollbarx.pack(side=tk.BOTTOM, fill=tk.X)
+        # this section would allow for expanding the viewable columns
+        self.tree.heading('id', text="ID", anchor=tk.W)
+        self.tree.heading('Item', text="Item", anchor=tk.W)
+        self.tree.heading('Quantity', text="Amount Wasted", anchor=tk.W)
+        self.tree.column('#0', stretch=tk.NO, minwidth=0, width=0)
+        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=60)
+        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=200)
+        self.tree.column('#3', stretch=tk.NO, minwidth=0, width=200)
+        self.tree.pack()
+
+        self.persist = persist
+
+        all_records = self.persist.get_all_sorted_records("waste")
+        # grab all records from db and add them to the treeview widget
+        for record in all_records:
+            self.tree.insert("", 0, values=(
+                record.rid, record.name, record.quantity))
+
+        edit_button = tk.Button(self, text="Submit",
+                                command=self.waste)
+        edit_button.grid(column=5, row=7, pady=10, padx=10)
+
+        quantity_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]
+        self.value = tkinter.StringVar(self)
+        self.value.set("Quantity wasted:")
+        quantity_waste = tkinter.OptionMenu(self, self.value, *quantity_list)
+        quantity_waste.grid(column=4, row=6)
+
+        ingredient_list = ["Lettuce", "Tomato", "Patty", "Buns", "Fries"]
+        self.item = tkinter.StringVar(self)
+        self.item.set("Item wasted:")
+        ingredient_waste = tkinter.OptionMenu(self, self.item, *ingredient_list)
+        ingredient_waste.grid(column=3, row=6)
+
+    def waste(self):
+        self.value.get()
+        self.item.get()
+        ingredient = self.persist.get_record(self.item.get(), "inventory")
+        if int(ingredient.pp) < int(self.value.get()):
+            pass
+        else:
+            ingredient.use(int(self.value.get()))
+            self.persist.save_record(ingredient, "inventory")
+            waste = models.Wasted(str(self.item.get()), int(self.value.get()))
+            self.persist.save_record(waste, "waste")
+            self.update()
+
+    def update(self):
+        ''' to refresh the treeview, delete all its rows and repopulate from the db
+        '''
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        all_records = self.persist.get_all_sorted_records("waste")
+        for record in all_records:
+            self.tree.insert("", 0, values=(
+                record.rid, record.name, record.quantity))
+
 
 class DailyReport(tk.Frame):
     def __init__(self, parent, controller, persist=None):
@@ -366,8 +444,79 @@ class DailyReport(tk.Frame):
 
         button4.grid(row=4, column=1, padx=10, pady=10)
 
+        contact_table = tk.Frame(self, width=500)
+        contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
+        scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
+        scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
+        self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+        scrollbary.config(command=self.tree.yview)
+        scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbarx.config(command=self.tree.xview)
+        scrollbarx.pack(side=tk.BOTTOM, fill=tk.X)
+        # this section would allow for expanding the viewable columns
+        self.tree.heading('id', text="", anchor=tk.W)
+        self.tree.heading('Item', text="", anchor=tk.W)
+        self.tree.heading('Quantity', text="", anchor=tk.W)
+        self.tree.column('#0', stretch=tk.NO, minwidth=0, width=0)
+        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=100)
+        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=200)
+        self.tree.column('#3', stretch=tk.NO, minwidth=0, width=60)
+        self.tree.pack()
+
+        self.persist = persist
+
+        lambda: self.update()
+
+        end_day = ttk.Button(self, text="End Day", command=lambda: self.end_today())
+        end_day.grid(row=6, column=6)
+
+    def update(self):
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
+        all_order_records = self.persist.get_all_revenue()
+        all_waste_records = self.persist.get_all_waste()
+        # grab all records from db and add them to the treeview widget
+
+        waste_total = 0
+        for record in all_waste_records:
+            waste_total += record[1]
+
+        self.tree.insert("", 0, values=("Total:", "", waste_total))
+
+        self.tree.insert("", 0, values=("", "", "--------"))
+
+        for record in all_waste_records:
+            self.tree.insert("", 0, values=(
+                "", record[0], record[1]))
+
+        self.tree.insert("", 0, values=(
+            "Waste", "", ""))
+
+        order_total = 0
+        for record in all_order_records:
+            order_total += record[1]
+
+        self.tree.insert("", 0, values=("Total:", "", "$" + str(order_total)))
+
+        self.tree.insert("", 0, values=("", "", "--------"))
+
+        for record in all_order_records:
+            self.tree.insert("", 0, values=(
+                "", record[0], "$" + str(record[1])))
+
+        self.tree.insert("", 0, values=(
+            "Revenues", "", ""))
+
+    def end_today(self):
+        self.persist.end_of_day()
+        self.update()
+
 
 # Driver Code
-
+connect_database()
+create_database()
+close_database()
 app = tkinterApp()
 app.mainloop()

@@ -64,7 +64,7 @@ class SQLStorage():
             contacts = []
             for row in self.data_access:
                 contacts.append(
-                    Item(row[1], row[2], row[0]))
+                    Wasted(row[1], row[2], row[0]))
             return contacts
 
     def save_record(self, record, table):
@@ -91,12 +91,12 @@ class SQLStorage():
             self.conn.commit()
         if table.__contains__("waste"):
             if record.rid == 0:
-                self.data_access.execute("""INSERT INTO orders(item,cost) VALUES (?,?)
-                """, (record.name, record.cost))
+                self.data_access.execute("""INSERT INTO waste(item,quantity) VALUES (?,?)
+                """, (record.name, record.quantity))
                 record.rid = self.data_access.lastrowid
             else:
-                self.data_access.execute("""UPDATE orders SET item = ?,cost = ?
-                WHERE item_id = ?""", (record.name, record.cost, record.rid))
+                self.data_access.execute("""UPDATE waste SET item = ?,quantity = ?
+                WHERE item_id = ?""", (record.name, record.quantity, record.rid))
             self.conn.commit()
 
     def get_all_sorted_records(self, table):
@@ -121,6 +121,27 @@ class SQLStorage():
             return True
         return False
 
+    def get_all_revenue(self):
+        self.data_access.execute("""SELECT item, SUM(cost) FROM orders GROUP BY item;""")
+        #rows = self.data_access.fetchall()
+        contacts = []
+        for row in self.data_access:
+            contacts.append((row[0], row[1]))
+        return contacts
+
+    def get_all_waste(self):
+        self.data_access.execute("""SELECT item, SUM(quantity) FROM waste GROUP BY item;""")
+        #rows = self.data_access.fetchall()
+        contacts = []
+        for row in self.data_access:
+            contacts.append((row[0], row[1]))
+        return contacts
+
+    def end_of_day(self):
+        self.data_access.execute("""DELETE FROM orders""")
+        self.data_access.execute("""DELETE FROM waste""")
+        self.conn.commit()
+
 
 class Item():
     def __init__(self, name, cost, rid=0):
@@ -130,3 +151,13 @@ class Item():
 
     def __str__(self):
         return f'Item Sale#: {self.rid}; Name: {self.name}, Revenue: {self.cost}'
+
+
+class Wasted():
+    def __init__(self, name, quantity, rid=0):
+        self.rid = rid
+        self.name = name
+        self.quantity = quantity
+
+    def __str__(self):
+        return f'Waste Entry#: {self.rid}; Name: {self.name}, Quantity: {self.quantity}'
