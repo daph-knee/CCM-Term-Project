@@ -1,8 +1,7 @@
 # created ingredients class to track quantities
 
 class Ingredients:
-    def __init__(self, name, qpb, qoh, ppu,
-                 rid=0):  # qpu=quantity per unit(as in stock ordering unit), qoh=quantity on hand(as in number of stock units), produces = number of uses until 1 less qoh
+    def __init__(self, name, qpb, qoh, ppu,rid=0):  # qpb=quantity per box, qoh=quantity on hand(as in number of boxes), 
         self.rid = rid
         self.name = name
         self.qpb = qpb  # quantity per box (as in stock order box)
@@ -22,14 +21,10 @@ class Ingredients:
 
     def use(self, quantity):
         self.pp -= 1
-        self.units = self.pp /self.ppu
+        self.units = self.pp //self.ppu
         self.qoh = self.units / self.qpb
 
-"""tomato = Ingredients(rid=0, name="tomato", qpb=20, qoh=1, ppu=5)
-
-print(tomato)
-tomato.restock(3)
-print(tomato)
-tomato.use(1)
-print(tomato)
-"""
+bun = Ingredients("bun", 20,1,5)
+print(bun)
+bun.use(1)
+print(bun)

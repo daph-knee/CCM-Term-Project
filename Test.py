@@ -96,8 +96,8 @@ class POSPage(tk.Frame):
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
 
-        self.recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Buns"], "Fries": ["Fries"],
-                       "2 Fries": ["Fries", "Fries"],"Hamburger":["Buns","Patty"],"BLT":["Buns", "Lettuce","Tomato","Patty"],"Hotdog":["Buns","Patty"]}
+        self.recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Bun","Cheese"], "Fries": ["Potato"],
+                       "2 Fries": ["Potato", "Potato"],"Hamburger":["Bun","Patty"],"BLT":["Bun", "Lettuce","Tomato","Patty","Bacon"],"Hotdog":["Hot Dog Bun","Hot Dog"],"Onion Rings":["Onion"],"Greek Salad":["Cucumber","Tomato","Tomato","Tomato","Tomato","Tomato","Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Bell Pepper","Onion","Feta"],"Caesar Salad":["Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Parm","Croutons"],"Pop":["Pop"],"Water":["Water"],"Coffee":["Coffee"]}
 
         # label of frame Layout 2
         label = ttk.Label(self, text="POS", font=LARGEFONT)
@@ -155,42 +155,49 @@ class POSPage(tk.Frame):
         delete_button = tk.Button(self, text="Delete Item",
                                   command=self.delete_selected)
         delete_button.grid(column=9, row=8, pady=10, ipady=15)
-
-        cheeseburger_button = tk.Button(self, text="CheeseBurger", command=lambda: self.submit("Cheeseburger", 5))
-        cheeseburger_button.grid(column=4, row=2, pady=0)
-
-        fries_button = tk.Button(self, text="Fries", command=lambda: self.submit("Fries", 2))
-        fries_button.grid(column=5, row=2, pady=10)
-
-        fries2_button = tk.Button(self, text="2 Fries", command=lambda: self.submit("2 Fries", 4))
-        fries2_button.grid(column=6, row=2, pady=10)
         
         hamburger_button = tk.Button(self, text="Hamburger", command=lambda: self.submit("Hamburger", 4))
-        hamburger_button.grid(column=4, row=3, pady=0)
+        hamburger_button.grid(column=4, row=2, pady=0)        
+
+        cheeseburger_button = tk.Button(self, text="CheeseBurger", command=lambda: self.submit("Cheeseburger", 5))
+        cheeseburger_button.grid(column=5, row=2, pady=0)
         
         blt_button = tk.Button(self, text="BLT Burger", command=lambda: self.submit("BLT", 4))
-        blt_button.grid(column=4, row=4, pady=10)
+        blt_button.grid(column=6, row=2, pady=10)   
         
         hotdog_button = tk.Button(self, text="HotDog", command=lambda: self.submit("Hotdog", 4))
-        hotdog_button.grid(column=4, row=5, pady=10)  
+        hotdog_button.grid(column=4, row=3, pady=10)    
         
-        onionrings_button = tk.Button(self, text="Onion Rings", command=lambda: self.submit("Hotdog", 3))
-        onionrings_button.grid(column=5, row=3, pady=10)
+        greeksalad_button = tk.Button(self, text="Greek Salad", command=lambda: self.submit("Greek Salad", 4))
+        greeksalad_button.grid(column=5, row=3, pady=10)   
         
-        spfries_button = tk.Button(self, text="Sweet Potato Fries", command=lambda: self.submit("Hotdog", 3))
-        spfries_button.grid(column=5, row=4, pady=10) 
+        caesarsalad_button = tk.Button(self, text="Caesar Salad", command=lambda: self.submit("Caesar Salad", 4))
+        caesarsalad_button.grid(column=6, row=3, pady=10)         
+
+        fries_button = tk.Button(self, text="Fries", command=lambda: self.submit("Fries", 2))
+        fries_button.grid(column=4, row=4, pady=10)
+
+        fries2_button = tk.Button(self, text="2 Fries", command=lambda: self.submit("2 Fries", 4))
+        fries2_button.grid(column=5, row=4, pady=10)
         
-        greeksalad_button = tk.Button(self, text="Greek Salad", command=lambda: self.submit("Hotdog", 4))
-        greeksalad_button.grid(column=5, row=5, pady=10)  
+        onionrings_button = tk.Button(self, text="Onion Rings", command=lambda: self.submit("Onion Rings", 3))
+        onionrings_button.grid(column=6, row=4, pady=10)
         
-        cesarsalad_button = tk.Button(self, text="Ceasar Salad", command=lambda: self.submit("Hotdog", 4))
-        cesarsalad_button.grid(column=6, row=3, pady=10)       
+        pop_button = tk.Button(self, text="Pop", command=lambda: self.submit("Pop", 4))
+        pop_button.grid(column=4, row=5, pady=10)    
         
-        water_button = tk.Button(self, text="Bottled Water", command=lambda: self.submit("Hotdog", 4))
-        water_button.grid(column=6, row=4, pady=10) 
+        water_button = tk.Button(self, text="Bottled Water", command=lambda: self.submit("Water", 4))
+        water_button.grid(column=5, row=5, pady=10)         
         
-        pop_button = tk.Button(self, text="Pop", command=lambda: self.submit("Hotdog", 4))
-        pop_button.grid(column=6, row=5, pady=10)  
+        coffee_button = tk.Button(self, text="Coffee", command=lambda: self.submit("Coffee", 3))
+        coffee_button.grid(column=6, row=5, pady=10) 
+        
+        
+      
+        
+
+        
+
         
              
 
@@ -297,27 +304,28 @@ class Inventory(tk.Frame):
             # Fill inventory with all ingredients
             self.persist.save_record(ingredients_class.Ingredients("Lettuce", 20, 1, 5), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Tomato", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Patty", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Fries", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Bun", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Bacon", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Patty", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Potato", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Bun", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Bacon", 20, 5, 1), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Pickle", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Hot Dog Bun", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Hot Dog", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Cucumber", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Bell Pepper", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Onion", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Feta", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Parm", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Croutons", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Pop", 100, 1, 1), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Water", 100, 1, 1), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Coffee", 100, 1, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Hot Dog Bun", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Hot Dog", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Cucumber", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Bell Pepper", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Onion", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Feta", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Parm", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Croutons", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Pop", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Water", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Coffee", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Cheese", 20, 1, 5), "inventory")
         all_records = self.persist.get_all_sorted_records("inventory")
         # grab all records from db and add them to the treeview widget
         for record in all_records:
             self.tree.insert("", 0, values=(
-                record.rid, record.name, record.pp))
+                record.rid, record.name, record.units))
 
         ''' '''
 
@@ -416,11 +424,11 @@ class Waste(tk.Frame):
 
         self.persist = persist
 
-        all_records = self.persist.get_all_sorted_records("waste")
+        all_records = self.persist.get_all_sorted_records("inventory")
         # grab all records from db and add them to the treeview widget
         for record in all_records:
             self.tree.insert("", 0, values=(
-                record.rid, record.name, record.quantity))
+                record.rid, record.name, record.pp))
 
         edit_button = tk.Button(self, text="Submit",
                                 command=self.waste)
