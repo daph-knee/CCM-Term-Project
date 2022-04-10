@@ -97,7 +97,7 @@ class POSPage(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         self.recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Buns"], "Fries": ["Fries"],
-                       "2 Fries": ["Fries", "Fries"]}
+                       "2 Fries": ["Fries", "Fries"],"Hamburger":["Buns","Patty"],"BLT":["Buns", "Lettuce","Tomato","Patty"],"Hotdog":["Buns","Patty"]}
 
         # label of frame Layout 2
         label = ttk.Label(self, text="POS", font=LARGEFONT)
@@ -130,7 +130,7 @@ class POSPage(tk.Frame):
         button4.grid(row=4, column=1, padx=10)
 
         contact_table = tk.Frame(self, width=500)
-        contact_table.grid(column=6, row=1, rowspan=7, columnspan=5, padx=10, pady=10)
+        contact_table.grid(column=8, row=1, rowspan=7, columnspan=5, padx=10, pady=10)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("name", "cost"),
@@ -156,14 +156,45 @@ class POSPage(tk.Frame):
                                   command=self.delete_selected)
         delete_button.grid(column=9, row=8, pady=10, ipady=15)
 
-        cheeseburger_button = tk.Button(self, text="Add CheeseBurger", command=lambda: self.submit("Cheeseburger", 5))
-        cheeseburger_button.grid(column=4, row=8, pady=10)
+        cheeseburger_button = tk.Button(self, text="CheeseBurger", command=lambda: self.submit("Cheeseburger", 5))
+        cheeseburger_button.grid(column=4, row=2, pady=0)
 
-        fries_button = tk.Button(self, text="Add Fries", command=lambda: self.submit("Fries", 2))
-        fries_button.grid(column=5, row=8, pady=10)
+        fries_button = tk.Button(self, text="Fries", command=lambda: self.submit("Fries", 2))
+        fries_button.grid(column=5, row=2, pady=10)
 
-        fries2_button = tk.Button(self, text="Add 2 Fries", command=lambda: self.submit("2 Fries", 4))
-        fries2_button.grid(column=6, row=8, pady=10)
+        fries2_button = tk.Button(self, text="2 Fries", command=lambda: self.submit("2 Fries", 4))
+        fries2_button.grid(column=6, row=2, pady=10)
+        
+        hamburger_button = tk.Button(self, text="Hamburger", command=lambda: self.submit("Hamburger", 4))
+        hamburger_button.grid(column=4, row=3, pady=0)
+        
+        blt_button = tk.Button(self, text="BLT Burger", command=lambda: self.submit("BLT", 4))
+        blt_button.grid(column=4, row=4, pady=10)
+        
+        hotdog_button = tk.Button(self, text="HotDog", command=lambda: self.submit("Hotdog", 4))
+        hotdog_button.grid(column=4, row=5, pady=10)  
+        
+        onionrings_button = tk.Button(self, text="Onion Rings", command=lambda: self.submit("Hotdog", 3))
+        onionrings_button.grid(column=5, row=3, pady=10)
+        
+        spfries_button = tk.Button(self, text="Sweet Potato Fries", command=lambda: self.submit("Hotdog", 3))
+        spfries_button.grid(column=5, row=4, pady=10) 
+        
+        greeksalad_button = tk.Button(self, text="Greek Salad", command=lambda: self.submit("Hotdog", 4))
+        greeksalad_button.grid(column=5, row=5, pady=10)  
+        
+        cesarsalad_button = tk.Button(self, text="Ceasar Salad", command=lambda: self.submit("Hotdog", 4))
+        cesarsalad_button.grid(column=6, row=3, pady=10)       
+        
+        water_button = tk.Button(self, text="Bottled Water", command=lambda: self.submit("Hotdog", 4))
+        water_button.grid(column=6, row=4, pady=10) 
+        
+        pop_button = tk.Button(self, text="Pop", command=lambda: self.submit("Hotdog", 4))
+        pop_button.grid(column=6, row=5, pady=10)  
+        
+             
+
+        
 
         pay_button = tk.Button(self, text="Pay", command=lambda: self.update())
         pay_button.grid(column=10, row=8, pady=10, ipadx=15, ipady=15)
@@ -255,6 +286,7 @@ class Inventory(tk.Frame):
         self.tree.column('#1', stretch=tk.NO, minwidth=0, width=60)
         self.tree.column('#2', stretch=tk.NO, minwidth=0, width=200)
         self.tree.column('#3', stretch=tk.NO, minwidth=0, width=200)
+        #self.tree.column('#4', stretch=tk.NO, minwidth=0, width=200)
         self.tree.bind('<<TreeviewSelect>>', self.on_select)
         self.tree.pack()
         self.selected = []
@@ -268,6 +300,7 @@ class Inventory(tk.Frame):
             self.persist.save_record(ingredients_class.Ingredients("Patty", 20, 1, 5), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Fries", 20, 1, 5), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Buns", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Cheese", 20, 1, 5), "inventory")
         all_records = self.persist.get_all_sorted_records("inventory")
         # grab all records from db and add them to the treeview widget
         for record in all_records:
@@ -362,6 +395,7 @@ class Waste(tk.Frame):
         self.tree.column('#1', stretch=tk.NO, minwidth=0, width=60)
         self.tree.column('#2', stretch=tk.NO, minwidth=0, width=200)
         self.tree.column('#3', stretch=tk.NO, minwidth=0, width=200)
+        #self.tree.column('#4', stretch=tk.NO, minwidth=0, width=200)
         self.tree.pack()
 
         self.persist = persist
@@ -382,7 +416,7 @@ class Waste(tk.Frame):
         quantity_waste = tkinter.OptionMenu(self, self.value, *quantity_list)
         quantity_waste.grid(column=4, row=6)
 
-        ingredient_list = ["Lettuce", "Tomato", "Patty", "Buns", "Fries"]
+        ingredient_list = ["Lettuce", "Tomato", "Patty", "Buns", "Fries", "Cheese"]
         self.item = tkinter.StringVar(self)
         self.item.set("Item wasted:")
         ingredient_waste = tkinter.OptionMenu(self, self.item, *ingredient_list)
