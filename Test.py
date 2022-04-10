@@ -106,28 +106,28 @@ class POSPage(tk.Frame):
         # grid
         label.grid(row=0, column=4, padx=10, pady=10)
 
-        button1 = ttk.Button(self, text="POS")
+        pos_button = ttk.Button(self, text="POS")
 
-        button1.grid(row=1, column=1, padx=10)
+        pos_button.grid(row=1, column=1, padx=10)
 
-        button2 = ttk.Button(self, text="Inventory",
+        inventory_button = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
 
         # putting the button in its place by
         # using grid
-        button2.grid(row=2, column=1, padx=10)
+        inventory_button.grid(row=2, column=1, padx=10)
 
         ## button to show frame 2 with text layout2
-        button3 = ttk.Button(self, text="Waste Man.",
+        waste_menu_button = ttk.Button(self, text="Waste Man.",
                              command=lambda: controller.show_frame(Waste))
 
         # putting the button in its place by
         # using grid
-        button3.grid(row=3, column=1, padx=10)
+        waste_menu_button.grid(row=3, column=1, padx=10)
 
-        button4 = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
+        daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        button4.grid(row=4, column=1, padx=10)
+        daily_button.grid(row=4, column=1, padx=10)
 
         contact_table = tk.Frame(self, width=500)
         contact_table.grid(column=8, row=1, rowspan=7, columnspan=5, padx=10, pady=10)
@@ -378,28 +378,28 @@ class Waste(tk.Frame):
 
         # putting the button in its place by
         # using grid
-        button1 = ttk.Button(self, text="POS",
+        pos_button = ttk.Button(self, text="POS",
                              command=lambda: controller.show_frame(POSPage))
 
-        button1.grid(row=1, column=1, padx=10, pady=10)
+        pos_button.grid(row=1, column=1, padx=10, pady=10)
 
-        button2 = ttk.Button(self, text="Inventory",
+        inventory_button = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
 
         # putting the button in its place by
         # using grid
-        button2.grid(row=2, column=1, padx=10, pady=10)
+        inventory_button.grid(row=2, column=1, padx=10, pady=10)
 
         ## button to show frame 2 with text layout2
-        button3 = ttk.Button(self, text="Waste Man.")
+        waste_menu_button = ttk.Button(self, text="Waste Man.")
 
         # putting the button in its place by
         # using grid
-        button3.grid(row=3, column=1, padx=10, pady=10)
+        waste_menu_button.grid(row=3, column=1, padx=10, pady=10)
 
-        button4 = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
+        daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        button4.grid(row=4, column=1, padx=10, pady=10)
+        daily_button.grid(row=4, column=1, padx=10, pady=10)
 
         contact_table = tk.Frame(self, width=500)
         contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
@@ -478,29 +478,29 @@ class DailyReport(tk.Frame):
 
         # button to show frame 2 with text
         # layout2
-        button1 = ttk.Button(self, text="POS",
+        pos_button = ttk.Button(self, text="POS",
                              command=lambda: controller.show_frame(POSPage))
 
-        button1.grid(row=1, column=1, padx=10, pady=10)
+        pos_button.grid(row=1, column=1, padx=10, pady=10)
 
-        button2 = ttk.Button(self, text="Inventory",
+        inventory_button = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
 
         # putting the button in its place by
         # using grid
-        button2.grid(row=2, column=1, padx=10, pady=10)
+        inventory_button.grid(row=2, column=1, padx=10, pady=10)
 
         # button to show frame 2 with text layout2
-        button3 = ttk.Button(self, text="Waste Man.",
+        waste_menu_button = ttk.Button(self, text="Waste Man.",
                              command=lambda: controller.show_frame(Waste))
 
         # putting the button in its place by
         # using grid
-        button3.grid(row=3, column=1, padx=10, pady=10)
+        waste_menu_button.grid(row=3, column=1, padx=10, pady=10)
 
-        button4 = ttk.Button(self, text="Daily Report")
+        daily_button = ttk.Button(self, text="Daily Report")
 
-        button4.grid(row=4, column=1, padx=10, pady=10)
+        daily_button.grid(row=4, column=1, padx=10, pady=10)
 
         contact_table = tk.Frame(self, width=500)
         contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
