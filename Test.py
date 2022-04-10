@@ -341,7 +341,7 @@ class Inventory(tk.Frame):
         restock_quantity.grid(column=3, row=6)
         
         #added label indicating how many are in one box
-        box_quantity = tk.Label(self, text="*One box contains 100 units")
+        box_quantity = tk.Label(self, text="*One box contains 20 units")
         box_quantity.grid(column=3, row=7, columnspan=2)
 
     def edit_selected(self):
@@ -366,7 +366,7 @@ class Inventory(tk.Frame):
         all_records = self.persist.get_all_sorted_records("inventory")
         for record in all_records:
             self.tree.insert("", 0, values=(
-                record.rid, record.name, record.pp))
+                record.rid, record.name, record.units))
 
 
 # third window frame page2
