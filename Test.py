@@ -226,7 +226,7 @@ class POSPage(tk.Frame):
             ing = self.recipe[self.tree.item(row)['values'][0]]
             for i in ing:
                 ing_data = self.persist.get_record(i, "inventory")
-                ing_data.use(1)
+                ing_data.use()
                 self.persist.save_record(ing_data, "inventory")
             self.tree.delete(row)
 

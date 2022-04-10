@@ -19,24 +19,8 @@ class Ingredients:
         self.units = self.qoh * self.qpb
         self.pp = self.units * self.ppu
 
-    def use(self, quantity):
+    def use(self):
         self.pp -= 1
         self.units = self.pp //self.ppu
         self.qoh = self.units / self.qpb
 
-bun = Ingredients("bun", 20,1,5)
-print(bun)
-bun.use(1)
-print(bun)
-bun.use(1)
-print(bun)
-bun.use(1)
-print(bun)
-bun.use(1)
-print(bun)
-bun.use(1)
-print(bun)
-bun.use(1)
-print(bun)
-bun.use(1)
-print(bun)
