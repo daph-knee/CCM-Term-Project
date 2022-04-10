@@ -299,8 +299,20 @@ class Inventory(tk.Frame):
             self.persist.save_record(ingredients_class.Ingredients("Tomato", 20, 1, 5), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Patty", 20, 1, 5), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Fries", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Buns", 20, 1, 5), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Cheese", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Bun", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Bacon", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Pickle", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Hot Dog Bun", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Hot Dog", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Cucumber", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Bell Pepper", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Onion", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Feta", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Parm", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Croutons", 20, 1, 5), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Pop", 100, 1, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Water", 100, 1, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Coffee", 100, 1, 1), "inventory")
         all_records = self.persist.get_all_sorted_records("inventory")
         # grab all records from db and add them to the treeview widget
         for record in all_records:
@@ -309,16 +321,20 @@ class Inventory(tk.Frame):
 
         ''' '''
 
-        # I don't love clunkiness of vertical ordering here, should use horizontal space better
+        #Adjusted to display horizontally
         edit_button = tk.Button(self, text="Restock Item",
                                 command=self.edit_selected)
-        edit_button.grid(column=3, row=7, pady=10)
+        edit_button.grid(column=4, row=6, pady=10)
 
         options_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]
         self.value = tkinter.StringVar(self)
         self.value.set("Number of boxes to order:")
         restock_quantity = tkinter.OptionMenu(self, self.value, *options_list)
         restock_quantity.grid(column=3, row=6)
+        
+        #added label indicating how many are in one box
+        box_quantity = tk.Label(self, text="*One box contains 100 units")
+        box_quantity.grid(column=3, row=7, columnspan=2)
 
     def edit_selected(self):
         idx = self.selected[0]  # use first selected item if multiple

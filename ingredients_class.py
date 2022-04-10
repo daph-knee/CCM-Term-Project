@@ -21,9 +21,9 @@ class Ingredients:
         self.pp = self.units * self.ppu
 
     def use(self, quantity):
-        self.units -= quantity / self.ppu
+        self.pp -= 1
+        self.units = self.pp /self.ppu
         self.qoh = self.units / self.qpb
-        self.pp = self.units * self.ppu
 
 """tomato = Ingredients(rid=0, name="tomato", qpb=20, qoh=1, ppu=5)
 
