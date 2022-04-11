@@ -19,8 +19,8 @@ class Ingredients:
         self.units = self.qoh * self.qpb
         self.pp = self.units * self.ppu
 
-    def use(self):
-        self.pp -= 1
+    def use(self,amount):
+        self.pp -= 1*int(amount)
         self.units = self.pp //self.ppu
         self.qoh = self.units / self.qpb
 

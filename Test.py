@@ -315,7 +315,7 @@ class Inventory(tk.Frame):
             self.persist.save_record(ingredients_class.Ingredients("Bell Pepper", 20, 5, 1), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Onion", 20, 5, 1), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Feta", 20, 5, 1), "inventory")
-            self.persist.save_record(ingredients_class.Ingredients("Parm", 20, 5, 1), "inventory")
+            self.persist.save_record(ingredients_class.Ingredients("Parmesan", 20, 5, 1), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Croutons", 20, 5, 1), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Pop", 20, 5, 1), "inventory")
             self.persist.save_record(ingredients_class.Ingredients("Water", 20, 5, 1), "inventory")
@@ -374,7 +374,7 @@ class Waste(tk.Frame):
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="Waste Management", font=LARGEFONT)
-        label.grid(row=0, column=4, padx=10, pady=10)
+        label.grid(row=0, column=2, padx=10, pady=10, columnspan=2)
 
         # putting the button in its place by
         # using grid
@@ -402,7 +402,7 @@ class Waste(tk.Frame):
         daily_button.grid(row=4, column=1, padx=10, pady=10)
 
         contact_table = tk.Frame(self, width=500)
-        contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
+        contact_table.grid(column=3, row=1, columnspan=4, rowspan=5)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
@@ -432,30 +432,43 @@ class Waste(tk.Frame):
 
         edit_button = tk.Button(self, text="Submit",
                                 command=self.waste)
-        edit_button.grid(column=5, row=7, pady=10, padx=10)
+        edit_button.grid(column=2, row=4, pady=10, padx=10)
 
         quantity_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]
         self.value = tkinter.StringVar(self)
         self.value.set("Quantity wasted:")
         quantity_waste = tkinter.OptionMenu(self, self.value, *quantity_list)
-        quantity_waste.grid(column=4, row=6)
+        quantity_waste.grid(column=2, row=3)
 
-        ingredient_list = ["Lettuce", "Tomato", "Patty", "Buns", "Fries", "Cheese"]
+        ingredient_list = ["Lettuce", "Tomato", "Patty", "Bun", "Potato", "Cheese", "Bacon", "Pickle","Hot Dog Bun","Hot Dog","Cucumber","Bell Pepper","Onion","Feta","Parmesan","Croutons"]
         self.item = tkinter.StringVar(self)
         self.item.set("Item wasted:")
         ingredient_waste = tkinter.OptionMenu(self, self.item, *ingredient_list)
-        ingredient_waste.grid(column=3, row=6)
+        ingredient_waste.grid(column=2, row=1)
+        
+        
+        units = ["Box","Individual"]
+        self.units = tkinter.StringVar(self)
+        self.units.set("Units:")
+        waste_units = tkinter.OptionMenu(self, self.units, *units)
+        waste_units.grid(column=2, row=2)        
+        
 
     def waste(self):
         self.value.get()
         self.item.get()
+        self.units.get()
         ingredient = self.persist.get_record(self.item.get(), "inventory")
-        if int(ingredient.pp) < int(self.value.get()):
+        if self.units.get() == "Box":
+            value = int(self.value.get)*20
+        else:
+            value = int(self.value.get())
+        if int(ingredient.pp) < value:
             pass
         else:
-            ingredient.use(int(self.value.get()))
+            ingredient.use(value)
             self.persist.save_record(ingredient, "inventory")
-            waste = models.Wasted(str(self.item.get()), int(self.value.get()))
+            waste = models.Wasted(str(self.item.get()), value)
             self.persist.save_record(waste, "waste")
             self.update()
 
