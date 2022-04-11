@@ -61,6 +61,7 @@ class tkinterApp(tk.Tk):
 
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
+      
 
         # initializing frames to an empty array
         self.frames = {}
@@ -97,7 +98,7 @@ class POSPage(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         self.recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Bun","Cheese"], "Fries": ["Potato"],
-                       "2 Fries": ["Potato", "Potato"],"Hamburger":["Bun","Patty"],"BLT":["Bun", "Lettuce","Tomato","Patty","Bacon"],"Hotdog":["Hot Dog Bun","Hot Dog"],"Onion Rings":["Onion"],"Greek Salad":["Cucumber","Tomato","Tomato","Tomato","Tomato","Tomato","Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Bell Pepper","Onion","Feta"],"Caesar Salad":["Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Parm","Croutons"],"Pop":["Pop"],"Water":["Water"],"Coffee":["Coffee"]}
+                       "2 Fries": ["Potato", "Potato"],"Hamburger":["Bun","Patty"],"BLT":["Bun", "Lettuce","Tomato","Patty","Bacon"],"Hotdog":["Hot Dog Bun","Hot Dog"],"Onion Rings":["Onion"],"Greek Salad":["Cucumber","Tomato","Tomato","Tomato","Tomato","Tomato","Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Bell Pepper","Onion","Feta"],"Caesar Salad":["Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Parmesan","Croutons"],"Pop":["Pop"],"Water":["Water"],"Coffee":["Coffee"]}
 
         # label of frame Layout 2
         label = ttk.Label(self, text="POS", font=LARGEFONT)
@@ -130,11 +131,11 @@ class POSPage(tk.Frame):
         daily_button.grid(row=4, column=1, padx=10, pady=10)
 
         contact_table = tk.Frame(self, width=500)
-        contact_table.grid(column=8, row=1, rowspan=7, columnspan=5, padx=10, pady=10)
+        contact_table.grid(column=8, row=1, rowspan=6, columnspan=5, padx=10, pady=10)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("name", "cost"),
-                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set,height=20)
         scrollbary.config(command=self.tree.yview)
         scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
         scrollbarx.config(command=self.tree.xview)
@@ -226,7 +227,7 @@ class POSPage(tk.Frame):
             ing = self.recipe[self.tree.item(row)['values'][0]]
             for i in ing:
                 ing_data = self.persist.get_record(i, "inventory")
-                ing_data.use()
+                ing_data.use(1)
                 self.persist.save_record(ing_data, "inventory")
             self.tree.delete(row)
 
@@ -254,13 +255,13 @@ class Inventory(tk.Frame):
         POS_button = ttk.Button(self, text="POS",
                                 command=lambda: controller.show_frame(POSPage))
 
-        POS_button.grid(row=1, column=1, padx=10, pady=10)
+        POS_button.grid(row=1, column=1, padx=10, pady=31)
 
         inventory_button = ttk.Button(self, text="Inventory")
 
         # putting the button in its place by
         # using grid
-        inventory_button.grid(row=2, column=1, padx=10, pady=10)
+        inventory_button.grid(row=2, column=1, padx=10, pady=31)
 
         ## button to show frame 2 with text layout2
         waste_button = ttk.Button(self, text="Waste Man.",
@@ -268,11 +269,11 @@ class Inventory(tk.Frame):
 
         # putting the button in its place by
         # using grid
-        waste_button.grid(row=3, column=1, padx=10, pady=10)
+        waste_button.grid(row=3, column=1, padx=10, pady=31)
 
         daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        daily_button.grid(row=4, column=1, padx=10, pady=10)
+        daily_button.grid(row=4, column=1, padx=10, pady=31)
 
         # columns for tree view
         contact_table = tk.Frame(self, width=500)
@@ -381,25 +382,25 @@ class Waste(tk.Frame):
         pos_button = ttk.Button(self, text="POS",
                              command=lambda: controller.show_frame(POSPage))
 
-        pos_button.grid(row=1, column=1, padx=10, pady=10)
+        pos_button.grid(row=1, column=1, padx=10, pady=31)
 
         inventory_button = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
 
         # putting the button in its place by
         # using grid
-        inventory_button.grid(row=2, column=1, padx=10, pady=10)
+        inventory_button.grid(row=2, column=1, padx=10, pady=31)
 
         ## button to show frame 2 with text layout2
         waste_menu_button = ttk.Button(self, text="Waste Man.")
 
         # putting the button in its place by
         # using grid
-        waste_menu_button.grid(row=3, column=1, padx=10, pady=10)
+        waste_menu_button.grid(row=3, column=1, padx=10, pady=31)
 
         daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        daily_button.grid(row=4, column=1, padx=10, pady=10)
+        daily_button.grid(row=4, column=1, padx=10, pady=31)
 
         contact_table = tk.Frame(self, width=500)
         contact_table.grid(column=3, row=1, columnspan=4, rowspan=5)
@@ -432,7 +433,7 @@ class Waste(tk.Frame):
 
         edit_button = tk.Button(self, text="Submit",
                                 command=self.waste)
-        edit_button.grid(column=2, row=4, pady=10, padx=10)
+        edit_button.grid(column=2, row=4, pady=10, padx=50)
 
         quantity_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]
         self.value = tkinter.StringVar(self)
@@ -455,22 +456,25 @@ class Waste(tk.Frame):
         
 
     def waste(self):
-        self.value.get()
-        self.item.get()
-        self.units.get()
+        self.value.get()#quantity
+        self.item.get() #items
+        self.units.get() #units
         ingredient = self.persist.get_record(self.item.get(), "inventory")
-        if self.units.get() == "Box":
-            value = int(self.value.get)*20
+        if self.item.get()=="Item wasted:" or self.units.get()=="Units:" or self.value.get()=="Quantity wasted:":
+            print("error")
         else:
-            value = int(self.value.get())
-        if int(ingredient.pp) < value:
-            pass
-        else:
-            ingredient.use(value)
-            self.persist.save_record(ingredient, "inventory")
-            waste = models.Wasted(str(self.item.get()), value)
-            self.persist.save_record(waste, "waste")
-            self.update()
+            if self.units.get() == "Box":
+                value = int(self.value.get)*20
+            else:
+                value = int(self.value.get())
+            if int(ingredient.pp) < value:
+                pass
+            else:
+                ingredient.use(value)
+                self.persist.save_record(ingredient, "inventory")
+                waste = models.Wasted(str(self.item.get()), value)
+                self.persist.save_record(waste, "waste")
+                self.update()
 
     def update(self):
         ''' to refresh the treeview, delete all its rows and repopulate from the db
@@ -494,14 +498,14 @@ class DailyReport(tk.Frame):
         pos_button = ttk.Button(self, text="POS",
                              command=lambda: controller.show_frame(POSPage))
 
-        pos_button.grid(row=1, column=1, padx=10, pady=10)
+        pos_button.grid(row=1, column=1, padx=10, pady=31)
 
         inventory_button = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
 
         # putting the button in its place by
         # using grid
-        inventory_button.grid(row=2, column=1, padx=10, pady=10)
+        inventory_button.grid(row=2, column=1, padx=10, pady=31)
 
         # button to show frame 2 with text layout2
         waste_menu_button = ttk.Button(self, text="Waste Man.",
@@ -509,11 +513,11 @@ class DailyReport(tk.Frame):
 
         # putting the button in its place by
         # using grid
-        waste_menu_button.grid(row=3, column=1, padx=10, pady=10)
+        waste_menu_button.grid(row=3, column=1, padx=10, pady=31)
 
         daily_button = ttk.Button(self, text="Daily Report")
 
-        daily_button.grid(row=4, column=1, padx=10, pady=10)
+        daily_button.grid(row=4, column=1, padx=10, pady=31)
 
         contact_table = tk.Frame(self, width=500)
         contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
