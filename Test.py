@@ -102,22 +102,22 @@ class POSPage(tk.Frame):
                        "2 Fries": ["Potato", "Potato"],"Hamburger":["Bun","Patty"],"BLT":["Bun", "Lettuce","Tomato","Patty","Bacon"],"Hotdog":["Hot Dog Bun","Hot Dog"],"Onion Rings":["Onion"],"Greek Salad":["Cucumber","Tomato","Tomato","Tomato","Tomato","Tomato","Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Bell Pepper","Onion","Feta"],"Caesar Salad":["Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Parmesan","Croutons"],"Pop":["Pop"],"Water":["Water"],"Coffee":["Coffee"], "Discount":[]}
 
         # label of frame Layout 2
-        label = ttk.Label(self, text="POS", font=LARGEFONT)
+        POS_label = ttk.Label(self, text="POS", font=LARGEFONT)
 
         # putting the grid in its place by using
         # grid
-        label.grid(row=0, column=4, padx=10, pady=10)
+        POS_label.grid(row=0, column=1, padx=10, pady=10)
 
         pos_button = ttk.Button(self, text="POS")
 
-        pos_button.grid(row=1, column=1, padx=10, pady=10)
+        pos_button.grid(row=1, column=1, padx=10, pady=32)
 
         inventory_button = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
 
         # putting the button in its place by
         # using grid
-        inventory_button.grid(row=2, column=1, padx=10, pady=10)
+        inventory_button.grid(row=2, column=1, padx=10, pady=32)
 
         ## button to show frame 2 with text layout2
         waste_menu_button = ttk.Button(self, text="Waste Man.",
@@ -125,18 +125,18 @@ class POSPage(tk.Frame):
 
         # putting the button in its place by
         # using grid
-        waste_menu_button.grid(row=3, column=1, padx=10, pady=10)
+        waste_menu_button.grid(row=3, column=1, padx=10, pady=32)
 
         self.daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        self.daily_button.grid(row=4, column=1, padx=10, pady=10)
+        self.daily_button.grid(row=4, column=1, padx=10, pady=32)
 
         contact_table = tk.Frame(self, width=500)
         contact_table.grid(column=7, row=1, rowspan=6, columnspan=5, padx=10, pady=10)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("name", "cost"),
-                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set,height=20)
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set,height=18)
         scrollbary.config(command=self.tree.yview)
         scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
         scrollbarx.config(command=self.tree.xview)
@@ -158,51 +158,51 @@ class POSPage(tk.Frame):
                                   command=self.delete_selected)
         delete_button.grid(column=9, row=8, pady=10, ipady=15)
         
-        discount_button = ttk.Button(self, text="Discount 10$",
-                                  command=lambda: self.submit("Discount", -10))
+        discount_button = ttk.Button(self, text="Discount $1",
+                                  command=lambda: self.submit("Discount", -1))
         discount_button.grid(column=7, row=8, pady=10, ipady=15)  
         
-        self.total_label=ttk.Label(self, text="Total: $0.0")  
-        self.total_label.grid(column=9, row=7)
+        self.total_label=ttk.Label(self, text="Total: $0.00")  
+        self.total_label.grid(column=8, row=7,columnspan=2, sticky='E')
         
         hamburger_button = ttk.Button(self, text="Hamburger", style="items.TButton",command=lambda: self.submit("Hamburger", 4))
-        hamburger_button.grid(column=4, row=1, pady=10,ipady=20)        
+        hamburger_button.grid(column=4, row=1,ipady=20)        
 
         cheeseburger_button = ttk.Button(self, text="CheeseBurger", style="items.TButton",command=lambda: self.submit("Cheeseburger", 5))
-        cheeseburger_button.grid(column=5, row=1, pady=10,ipady=20)
+        cheeseburger_button.grid(column=5, row=1,ipady=20)
         
         blt_button = ttk.Button(self, text="BLT Burger", style="items.TButton",command=lambda: self.submit("BLT", 4))
-        blt_button.grid(column=6, row=1, pady=10, ipady=20)   
+        blt_button.grid(column=6, row=1,ipady=20)   
         
         hotdog_button = ttk.Button(self, text="HotDog", style="items.TButton",command=lambda: self.submit("Hotdog", 4))
-        hotdog_button.grid(column=4, row=2, pady=10, ipady=20)    
+        hotdog_button.grid(column=4, row=2, ipady=20)    
         
         greeksalad_button = ttk.Button(self, text="Greek Salad",style="items.TButton", command=lambda: self.submit("Greek Salad", 4))
-        greeksalad_button.grid(column=5, row=2, pady=10, ipady=20)   
+        greeksalad_button.grid(column=5, row=2, ipady=20)   
         
         caesarsalad_button = ttk.Button(self, text="Caesar Salad", style="items.TButton",command=lambda: self.submit("Caesar Salad", 4))
-        caesarsalad_button.grid(column=6, row=2, pady=10,ipady=20)         
+        caesarsalad_button.grid(column=6, row=2, ipady=20)         
 
         fries_button = ttk.Button(self, text="Fries", style="items.TButton",command=lambda: self.submit("Fries", 2))
-        fries_button.grid(column=4, row=3, pady=10, ipady=20)
+        fries_button.grid(column=4, row=3, ipady=20)
 
         fries2_button = ttk.Button(self, text="2 Fries", style="items.TButton",command=lambda: self.submit("2 Fries", 4))
-        fries2_button.grid(column=5, row=3, pady=10,ipady=20)
+        fries2_button.grid(column=5, row=3,ipady=20)
         
         onionrings_button = ttk.Button(self, text="Onion Rings", style="items.TButton",command=lambda: self.submit("Onion Rings", 3))
-        onionrings_button.grid(column=6, row=3, pady=10, ipady=20)
+        onionrings_button.grid(column=6, row=3, ipady=20)
         
         pop_button = ttk.Button(self, text="Pop", style="items.TButton",command=lambda: self.submit("Pop", 4))
-        pop_button.grid(column=4, row=4, pady=10, ipady=20)    
+        pop_button.grid(column=4, row=4, ipady=20)    
         
         water_button = ttk.Button(self, text="Bottled Water", style="items.TButton",command=lambda: self.submit("Water", 4))
-        water_button.grid(column=5, row=4, pady=10, ipady=20)         
+        water_button.grid(column=5, row=4,ipady=20)         
         
         coffee_button = ttk.Button(self, text="Coffee", style="items.TButton", command=lambda: self.submit("Coffee", 3))
-        coffee_button.grid(column=6, row=4, pady=10, ipady=20) 
+        coffee_button.grid(column=6, row=4, ipady=20) 
     
         pay_button = ttk.Button(self, text="Pay", command=lambda: self.update())
-        pay_button.grid(column=10, row=8, pady=10, ipadx=15, ipady=15)
+        pay_button.grid(column=10, row=8, ipadx=15, ipady=15)
         
         
         s = ttk.Style(self)
@@ -263,21 +263,21 @@ class Inventory(tk.Frame):
 
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Inventory", font=LARGEFONT)
-        label.grid(row=0, column=2, padx=10, pady=10)
+        inventory_label = ttk.Label(self, text="Inventory", font=LARGEFONT)
+        inventory_label.grid(row=0, column=1, padx=15, pady=10, columnspan=2)
 
         # button to show frame 2 with text
         # layout2
         POS_button = ttk.Button(self, text="POS",
                                 command=lambda: controller.show_frame(POSPage))
 
-        POS_button.grid(row=1, column=1, padx=10, pady=31)
+        POS_button.grid(row=1, column=1, padx=10, pady=32)
 
         inventory_button = ttk.Button(self, text="Inventory")
 
         # putting the button in its place by
         # using grid
-        inventory_button.grid(row=2, column=1, padx=10, pady=31)
+        inventory_button.grid(row=2, column=1, padx=10, pady=32)
 
         ## button to show frame 2 with text layout2
         waste_button = ttk.Button(self, text="Waste Man.",
@@ -285,11 +285,11 @@ class Inventory(tk.Frame):
 
         # putting the button in its place by
         # using grid
-        waste_button.grid(row=3, column=1, padx=10, pady=31)
+        waste_button.grid(row=3, column=1, padx=10, pady=32)
 
         daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        daily_button.grid(row=4, column=1, padx=10, pady=31)
+        daily_button.grid(row=4, column=1, padx=10, pady=32)
 
         # columns for tree view
         contact_table = tk.Frame(self, width=500)
@@ -297,7 +297,7 @@ class Inventory(tk.Frame):
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
-                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set, height=15)
         scrollbary.config(command=self.tree.yview)
         scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
         scrollbarx.config(command=self.tree.xview)
@@ -390,8 +390,8 @@ class Inventory(tk.Frame):
 class Waste(tk.Frame):
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Waste Management", font=LARGEFONT)
-        label.grid(row=0, column=2, padx=10, pady=10, columnspan=2)
+        waste_label = ttk.Label(self, text="Waste Management", font=LARGEFONT)
+        waste_label.grid(row=0, column=1, padx=15, pady=10, columnspan=3)
 
         # putting the button in its place by
         # using grid
@@ -423,7 +423,7 @@ class Waste(tk.Frame):
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
-                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set, height=15)
         scrollbary.config(command=self.tree.yview)
         scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
         scrollbarx.config(command=self.tree.xview)
@@ -470,7 +470,8 @@ class Waste(tk.Frame):
         waste_units = tkinter.OptionMenu(self, self.units, *units)
         waste_units.grid(column=2, row=2)        
         
-        self.error = tkinter.Label(self, text="Please ensure you've selected an item, unit of measure, and quantity before submitting", fg="red")
+        self.missing = tkinter.Label(self, text="Please ensure you've selected an item, unit of measure, and quantity before submitting", fg="red")
+        self.error = tkinter.Label(self, text="You are trying to waste more than you have! Please double check the quantity & unit.", fg="red")
 
     def waste(self):
         self.value.get()#quantity
@@ -478,21 +479,21 @@ class Waste(tk.Frame):
         self.units.get() #units
         ingredient = self.persist.get_record(self.item.get(), "inventory")
         if self.item.get()=="Item wasted:" or self.units.get()=="Units:" or self.value.get()=="Quantity wasted:":
-            self.error.grid(column=2,row=5, columnspan=3)
+            self.missing.grid(column=2,row=5, columnspan=3)
         else:
             if self.units.get() == "Box":
-                value = int(self.value.get)*20
+                value = int(self.value.get())*20
             else:
                 value = int(self.value.get())
             if int(ingredient.pp) < value:
-                pass
+                self.error.grid(column=2,row=5, columnspan=3)
             else:
                 ingredient.use(value)
                 self.persist.save_record(ingredient, "inventory")
                 waste = models.Wasted(str(self.item.get()), value)
                 self.persist.save_record(waste, "waste")
                 self.update()
-                self.error.destroy()
+                self.missing.destroy()
 
     def update(self):
         ''' to refresh the treeview, delete all its rows and repopulate from the db
@@ -508,8 +509,8 @@ class Waste(tk.Frame):
 class DailyReport(tk.Frame):
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Daily Report", font=LARGEFONT)
-        label.grid(row=0, column=4, padx=10, pady=10)
+        daily_label = ttk.Label(self, text="Daily Report", font=LARGEFONT)
+        daily_label.grid(row=0, column=1, padx=15, pady=10, columnspan=2)
 
         # button to show frame 2 with text
         # layout2
@@ -542,7 +543,7 @@ class DailyReport(tk.Frame):
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
-                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set, height=15)
         scrollbary.config(command=self.tree.yview)
         scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
         scrollbarx.config(command=self.tree.xview)
@@ -562,7 +563,7 @@ class DailyReport(tk.Frame):
         lambda: self.update()
 
         end_day = ttk.Button(self, text="End Day", command=lambda: self.end_today())
-        end_day.grid(row=6, column=6)
+        end_day.grid(row=6, column=5)
 
     def update(self):
         for row in self.tree.get_children():
