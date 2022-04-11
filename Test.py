@@ -460,23 +460,15 @@ class Waste(tk.Frame):
         waste_units = tkinter.OptionMenu(self, self.units, *units)
         waste_units.grid(column=2, row=2)        
         
-        error = tkinter.Label(self, text="Please ensure you've selected an item, unit of measure, and quantity before submitting")
+        self.error = tkinter.Label(self, text="Please ensure you've selected an item, unit of measure, and quantity before submitting", fg="red")
 
     def waste(self):
         self.value.get()#quantity
         self.item.get() #items
         self.units.get() #units
         ingredient = self.persist.get_record(self.item.get(), "inventory")
-        if self.units.get() == "Box":
-            value = int(self.value.get)*20
-        elif self.units.get() == "Individual":
-                    value = int(self.value.get)        
-        else:
-            error.grid(column=2, row =5)
-        if int(ingredient.pp) < value:
-            pass
         if self.item.get()=="Item wasted:" or self.units.get()=="Units:" or self.value.get()=="Quantity wasted:":
-            print("error")
+            self.error.grid(column=2,row=5, columnspan=3)
         else:
             if self.units.get() == "Box":
                 value = int(self.value.get)*20
@@ -490,6 +482,7 @@ class Waste(tk.Frame):
                 waste = models.Wasted(str(self.item.get()), value)
                 self.persist.save_record(waste, "waste")
                 self.update()
+                self.error.destroy()
 
     def update(self):
         ''' to refresh the treeview, delete all its rows and repopulate from the db
