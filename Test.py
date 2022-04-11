@@ -98,7 +98,7 @@ class POSPage(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         self.recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Bun","Cheese"], "Fries": ["Potato"],
-                       "2 Fries": ["Potato", "Potato"],"Hamburger":["Bun","Patty"],"BLT":["Bun", "Lettuce","Tomato","Patty","Bacon"],"Hotdog":["Hot Dog Bun","Hot Dog"],"Onion Rings":["Onion"],"Greek Salad":["Cucumber","Tomato","Tomato","Tomato","Tomato","Tomato","Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Bell Pepper","Onion","Feta"],"Caesar Salad":["Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Parmesan","Croutons"],"Pop":["Pop"],"Water":["Water"],"Coffee":["Coffee"]}
+                       "2 Fries": ["Potato", "Potato"],"Hamburger":["Bun","Patty"],"BLT":["Bun", "Lettuce","Tomato","Patty","Bacon"],"Hotdog":["Hot Dog Bun","Hot Dog"],"Onion Rings":["Onion"],"Greek Salad":["Cucumber","Tomato","Tomato","Tomato","Tomato","Tomato","Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Bell Pepper","Onion","Feta"],"Caesar Salad":["Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Parmesan","Croutons"],"Pop":["Pop"],"Water":["Water"],"Coffee":["Coffee"], "Discount":[]}
 
         # label of frame Layout 2
         label = ttk.Label(self, text="POS", font=LARGEFONT)
@@ -131,7 +131,7 @@ class POSPage(tk.Frame):
         daily_button.grid(row=4, column=1, padx=10, pady=10)
 
         contact_table = tk.Frame(self, width=500)
-        contact_table.grid(column=8, row=1, rowspan=6, columnspan=5, padx=10, pady=10)
+        contact_table.grid(column=7, row=1, rowspan=6, columnspan=5, padx=10, pady=10)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("name", "cost"),
@@ -156,6 +156,12 @@ class POSPage(tk.Frame):
         delete_button = ttk.Button(self, text="Delete Item",
                                   command=self.delete_selected)
         delete_button.grid(column=9, row=8, pady=10, ipady=15)
+        
+        discount_button = ttk.Button(self, text="Discount 10$",
+                                  command=lambda: self.submit("Discount", -10))
+        discount_button.grid(column=7, row=8, pady=10, ipady=15)  
+        
+        total_label=ttk.Label(self, text="Total: $0.0")        
         
         hamburger_button = ttk.Button(self, text="Hamburger", style="items.TButton",command=lambda: self.submit("Hamburger", 4))
         hamburger_button.grid(column=4, row=1, pady=10,ipady=20)        
