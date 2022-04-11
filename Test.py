@@ -440,7 +440,7 @@ class Waste(tk.Frame):
         quantity_waste = tkinter.OptionMenu(self, self.value, *quantity_list)
         quantity_waste.grid(column=2, row=3)
 
-        ingredient_list = ["Lettuce", "Tomato", "Patty", "Bun", "Potato", "Cheese", "Bacon", "Pickle","Hot Dog Bun","Hot Dog","Cucumber","Bell Pepper","Onion","Feta","Parmesan","Croutons"]
+        ingredient_list = ["Bacon","Bell Pepper","Bun","Cheese","Coffee","Croutons","Cucumber","Feta","Hot Dog","Hot Dog Bun","Lettuce","Onion","Parmesan","Patty","Pickle","Pop","Potato","Tomato","Water"]
         self.item = tkinter.StringVar(self)
         self.item.set("Item wasted:")
         ingredient_waste = tkinter.OptionMenu(self, self.item, *ingredient_list)
