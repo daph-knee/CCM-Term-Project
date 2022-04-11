@@ -461,7 +461,6 @@ class Waste(tk.Frame):
         self.item.get() #items
         self.units.get() #units
         ingredient = self.persist.get_record(self.item.get(), "inventory")
-<<<<<<< HEAD
         if self.units.get() == "Box":
             value = int(self.value.get)*20
         elif self.units.get() == "Individual":
@@ -470,10 +469,8 @@ class Waste(tk.Frame):
             error.grid(column=2, row =5)
         if int(ingredient.pp) < value:
             pass
-=======
         if self.item.get()=="Item wasted:" or self.units.get()=="Units:" or self.value.get()=="Quantity wasted:":
             print("error")
->>>>>>> ec42782c763a3191dab7f9d94011162e3fc7abe9
         else:
             if self.units.get() == "Box":
                 value = int(self.value.get)*20
