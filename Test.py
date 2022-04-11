@@ -453,6 +453,7 @@ class Waste(tk.Frame):
         waste_units = tkinter.OptionMenu(self, self.units, *units)
         waste_units.grid(column=2, row=2)        
         
+        error = tkinter.Label(self, text="Please ensure you've selected an item, unit of measure, and quantity before submitting")
 
     def waste(self):
         self.value.get()
@@ -461,8 +462,10 @@ class Waste(tk.Frame):
         ingredient = self.persist.get_record(self.item.get(), "inventory")
         if self.units.get() == "Box":
             value = int(self.value.get)*20
+        elif self.units.get() == "Individual":
+                    value = int(self.value.get)        
         else:
-            value = int(self.value.get())
+            error.grid(column=2, row =5)
         if int(ingredient.pp) < value:
             pass
         else:
