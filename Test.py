@@ -96,6 +96,7 @@ class tkinterApp(tk.Tk):
 class POSPage(tk.Frame):
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
+        self.totalcost=0
 
         self.recipe = {"Cheeseburger": ["Lettuce", "Tomato", "Patty", "Bun","Cheese"], "Fries": ["Potato"],
                        "2 Fries": ["Potato", "Potato"],"Hamburger":["Bun","Patty"],"BLT":["Bun", "Lettuce","Tomato","Patty","Bacon"],"Hotdog":["Hot Dog Bun","Hot Dog"],"Onion Rings":["Onion"],"Greek Salad":["Cucumber","Tomato","Tomato","Tomato","Tomato","Tomato","Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Bell Pepper","Onion","Feta"],"Caesar Salad":["Lettuce","Lettuce","Lettuce","Lettuce","Lettuce","Parmesan","Croutons"],"Pop":["Pop"],"Water":["Water"],"Coffee":["Coffee"], "Discount":[]}
@@ -126,9 +127,9 @@ class POSPage(tk.Frame):
         # using grid
         waste_menu_button.grid(row=3, column=1, padx=10, pady=10)
 
-        daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
+        self.daily_button = ttk.Button(self, text="Daily Report", command=lambda: controller.show_frame(DailyReport))
 
-        daily_button.grid(row=4, column=1, padx=10, pady=10)
+        self.daily_button.grid(row=4, column=1, padx=10, pady=10)
 
         contact_table = tk.Frame(self, width=500)
         contact_table.grid(column=7, row=1, rowspan=6, columnspan=5, padx=10, pady=10)
@@ -161,7 +162,8 @@ class POSPage(tk.Frame):
                                   command=lambda: self.submit("Discount", -10))
         discount_button.grid(column=7, row=8, pady=10, ipady=15)  
         
-        total_label=ttk.Label(self, text="Total: $0.0")        
+        self.total_label=ttk.Label(self, text="Total: $0.0")  
+        self.total_label.grid(column=9, row=7)
         
         hamburger_button = ttk.Button(self, text="Hamburger", style="items.TButton",command=lambda: self.submit("Hamburger", 4))
         hamburger_button.grid(column=4, row=1, pady=10,ipady=20)        
@@ -207,6 +209,7 @@ class POSPage(tk.Frame):
         
         s.configure('TLabel', font=('Helvetica', 15))
         s.configure('TButton', font=('Helvetica', 15))
+        s.configure('TLabel', font=('Helvetica', 30), background='white', foreground="dark blue")
         
         s.configure('items.TButton', font=('Helvetica', 20), width="15")
         
@@ -236,16 +239,23 @@ class POSPage(tk.Frame):
                 ing_data.use(1)
                 self.persist.save_record(ing_data, "inventory")
             self.tree.delete(row)
+        self.total_label.config(text="Total: $0.0")
+        self.totalcost=0
 
     def submit(self, item, cost):
         ''' Add selected menu item to treeview widget
+        
         '''
+        
         valid = True
         for ing in self.recipe[item]:
             if self.persist.get_record(ing, "inventory").pp < 1:
                 valid = False
         if valid:
             self.tree.insert("", 0, values=(item, "$" + str(cost)))
+            self.totalcost+=cost
+            
+            self.total_label.config(text="Total: $"+ str(self.totalcost))
 
 
 # second window frame page1
