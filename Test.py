@@ -212,7 +212,7 @@ class POSPage(tk.Frame):
         s.configure('TLabel', font=('Helvetica', 30), background='white', foreground="dark blue")
         
         s.configure('items.TButton', font=('Helvetica', 20), width="15")
-        
+        s.configure('TMenubutton', font=('Helvetica', 15))
     
         
 
@@ -226,6 +226,8 @@ class POSPage(tk.Frame):
         '''
         for idx in self.selected:
             self.tree.delete(idx)
+            
+        
 
     def update(self):
         ''' Update the database when payment is recieved
@@ -254,7 +256,6 @@ class POSPage(tk.Frame):
         if valid:
             self.tree.insert("", 0, values=(item, "$" + str(cost)))
             self.totalcost+=cost
-            
             self.total_label.config(text="Total: $"+ str(self.totalcost))
 
 
@@ -293,7 +294,7 @@ class Inventory(tk.Frame):
 
         # columns for tree view
         contact_table = tk.Frame(self, width=500)
-        contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
+        contact_table.grid(column=2, row=1, columnspan=8, rowspan=5)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
@@ -306,9 +307,9 @@ class Inventory(tk.Frame):
         self.tree.heading('id', text="ID", anchor=tk.W)
         self.tree.heading('Item', text="Item", anchor=tk.W)
         self.tree.heading('Quantity', text="Quantity (individual units)", anchor=tk.W)
-        self.tree.column('#0', stretch=tk.NO, minwidth=0, width=0)
-        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=60)
-        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=200)
+        self.tree.column('#0', stretch=tk.NO, minwidth=0, width=10)
+        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=100)
+        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=300)
         self.tree.column('#3', stretch=tk.NO, minwidth=0, width=200)
         #self.tree.column('#4', stretch=tk.NO, minwidth=0, width=200)
         self.tree.bind('<<TreeviewSelect>>', self.on_select)
@@ -347,19 +348,19 @@ class Inventory(tk.Frame):
         ''' '''
 
         #Adjusted to display horizontally
-        edit_button = tk.Button(self, text="Restock Item",
+        edit_button = ttk.Button(self, text="Restock Item",
                                 command=self.edit_selected)
-        edit_button.grid(column=4, row=6, pady=10)
+        edit_button.grid(column=12, row=4, padx=30,ipadx=15, ipady=15)
 
         options_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]
         self.value = tkinter.StringVar(self)
-        self.value.set("Number of boxes to order:")
-        restock_quantity = tkinter.OptionMenu(self, self.value, *options_list)
-        restock_quantity.grid(column=3, row=6)
+        #self.value.set("Number of boxes to order:")
+        restock_quantity = ttk.OptionMenu(self, self.value, "Number of boxes to order:", *options_list )
+        restock_quantity.grid(column=12, row=2, padx=5)
         
         #added label indicating how many are in one box
         box_quantity = tk.Label(self, text="*One box contains 20 units")
-        box_quantity.grid(column=3, row=7, columnspan=2)
+        box_quantity.grid(column=13, row=2, columnspan=2)
 
     def edit_selected(self):
         idx = self.selected[0]  # use first selected item if multiple
@@ -433,9 +434,9 @@ class Waste(tk.Frame):
         self.tree.heading('Item', text="Item", anchor=tk.W)
         self.tree.heading('Quantity', text="Amount Wasted", anchor=tk.W)
         self.tree.column('#0', stretch=tk.NO, minwidth=0, width=0)
-        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=60)
-        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=200)
-        self.tree.column('#3', stretch=tk.NO, minwidth=0, width=200)
+        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=100)
+        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=350)
+        self.tree.column('#3', stretch=tk.NO, minwidth=0, width=300)
         #self.tree.column('#4', stretch=tk.NO, minwidth=0, width=200)
         self.tree.pack()
 
@@ -447,27 +448,24 @@ class Waste(tk.Frame):
             self.tree.insert("", 0, values=(
                 record.rid, record.name, record.pp))
 
-        edit_button = tk.Button(self, text="Submit",
+        edit_button = ttk.Button(self, text="Submit",
                                 command=self.waste)
-        edit_button.grid(column=2, row=4, pady=10, padx=50)
+        edit_button.grid(column=2, row=4, pady=10, padx=55, ipadx=10, ipady=15)
 
         quantity_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50]
         self.value = tkinter.StringVar(self)
-        self.value.set("Quantity wasted:")
-        quantity_waste = tkinter.OptionMenu(self, self.value, *quantity_list)
+        quantity_waste = ttk.OptionMenu(self, self.value,"Quantity wasted:", *quantity_list)
         quantity_waste.grid(column=2, row=3)
 
         ingredient_list = ["Bacon","Bell Pepper","Bun","Cheese","Coffee","Croutons","Cucumber","Feta","Hot Dog","Hot Dog Bun","Lettuce","Onion","Parmesan","Patty","Pickle","Pop","Potato","Tomato","Water"]
         self.item = tkinter.StringVar(self)
-        self.item.set("Item wasted:")
-        ingredient_waste = tkinter.OptionMenu(self, self.item, *ingredient_list)
+        ingredient_waste = ttk.OptionMenu(self, self.item,"Item wasted:", *ingredient_list)
         ingredient_waste.grid(column=2, row=1)
         
         
         units = ["Box","Individual"]
         self.units = tkinter.StringVar(self)
-        self.units.set("Units:")
-        waste_units = tkinter.OptionMenu(self, self.units, *units)
+        waste_units = ttk.OptionMenu(self, self.units,"Units:", *units)
         waste_units.grid(column=2, row=2)        
         
         self.missing = tkinter.Label(self, text="Please ensure you've selected an item, unit of measure, and quantity before submitting", fg="red")
@@ -552,10 +550,10 @@ class DailyReport(tk.Frame):
         self.tree.heading('id', text="", anchor=tk.W)
         self.tree.heading('Item', text="", anchor=tk.W)
         self.tree.heading('Quantity', text="", anchor=tk.W)
-        self.tree.column('#0', stretch=tk.NO, minwidth=0, width=0)
-        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=100)
-        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=200)
-        self.tree.column('#3', stretch=tk.NO, minwidth=0, width=60)
+        self.tree.column('#0', stretch=tk.NO, minwidth=0, width=100)
+        self.tree.column('#1', stretch=tk.NO, minwidth=0, width=200)
+        self.tree.column('#2', stretch=tk.NO, minwidth=0, width=300)
+        self.tree.column('#3', stretch=tk.NO, minwidth=0, width=300)
         self.tree.pack()
 
         self.persist = persist
@@ -563,7 +561,7 @@ class DailyReport(tk.Frame):
         lambda: self.update()
 
         end_day = ttk.Button(self, text="End Day", command=lambda: self.end_today())
-        end_day.grid(row=6, column=5)
+        end_day.grid(row=6, column=5, ipadx=10, ipady=15)
 
     def update(self):
         for row in self.tree.get_children():
