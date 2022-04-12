@@ -136,7 +136,7 @@ class POSPage(tk.Frame):
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("name", "cost"),
-                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set,height=18)
+                                 selectmode="extended", yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set,height=15)
         scrollbary.config(command=self.tree.yview)
         scrollbary.pack(side=tk.RIGHT, fill=tk.Y)
         scrollbarx.config(command=self.tree.xview)
@@ -360,7 +360,7 @@ class Inventory(tk.Frame):
         
         #added label indicating how many are in one box
         box_quantity = tk.Label(self, text="*One box contains 20 units")
-        box_quantity.grid(column=13, row=2, columnspan=2)
+        box_quantity.grid(column=12, row=3, columnspan=2)
 
     def edit_selected(self):
         idx = self.selected[0]  # use first selected item if multiple
@@ -392,14 +392,14 @@ class Waste(tk.Frame):
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
         waste_label = ttk.Label(self, text="Waste Management", font=LARGEFONT)
-        waste_label.grid(row=0, column=1, padx=15, pady=10, columnspan=3)
+        waste_label.grid(row=0, column=0, pady=10, columnspan=3)
 
         # putting the button in its place by
         # using grid
         pos_button = ttk.Button(self, text="POS",
                              command=lambda: controller.show_frame(POSPage))
 
-        pos_button.grid(row=1, column=1, padx=10, pady=31)
+        pos_button.grid(row=1, column=1, pady=31)
 
         inventory_button = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
@@ -508,21 +508,21 @@ class DailyReport(tk.Frame):
     def __init__(self, parent, controller, persist=None):
         tk.Frame.__init__(self, parent)
         daily_label = ttk.Label(self, text="Daily Report", font=LARGEFONT)
-        daily_label.grid(row=0, column=1, padx=15, pady=10, columnspan=2)
+        daily_label.grid(row=0, column=0, pady=10, columnspan=2)
 
         # button to show frame 2 with text
         # layout2
         pos_button = ttk.Button(self, text="POS",
                              command=lambda: controller.show_frame(POSPage))
 
-        pos_button.grid(row=1, column=1, padx=10, pady=31)
+        pos_button.grid(row=1, column=0, pady=31)
 
         inventory_button = ttk.Button(self, text="Inventory",
                              command=lambda: controller.show_frame(Inventory))
 
         # putting the button in its place by
         # using grid
-        inventory_button.grid(row=2, column=1, padx=10, pady=31)
+        inventory_button.grid(row=2, column=0, pady=31)
 
         # button to show frame 2 with text layout2
         waste_menu_button = ttk.Button(self, text="Waste Man.",
@@ -530,14 +530,14 @@ class DailyReport(tk.Frame):
 
         # putting the button in its place by
         # using grid
-        waste_menu_button.grid(row=3, column=1, padx=10, pady=31)
+        waste_menu_button.grid(row=3, column=0, padx=10, pady=31)
 
         daily_button = ttk.Button(self, text="Daily Report")
 
-        daily_button.grid(row=4, column=1, padx=10, pady=31)
+        daily_button.grid(row=4, column=0, pady=31)
 
         contact_table = tk.Frame(self, width=500)
-        contact_table.grid(column=2, row=1, columnspan=4, rowspan=5)
+        contact_table.grid(column=1, row=1, columnspan=6, rowspan=5)
         scrollbarx = tk.Scrollbar(contact_table, orient=tk.HORIZONTAL)
         scrollbary = tk.Scrollbar(contact_table, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(contact_table, columns=("id", "Item", "Quantity"),
@@ -561,7 +561,7 @@ class DailyReport(tk.Frame):
         lambda: self.update()
 
         end_day = ttk.Button(self, text="End Day", command=lambda: self.end_today())
-        end_day.grid(row=6, column=5, ipadx=10, ipady=15)
+        end_day.grid(row=6, column=3, ipadx=10, ipady=15)
 
     def update(self):
         for row in self.tree.get_children():
